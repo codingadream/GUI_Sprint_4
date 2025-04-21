@@ -19,17 +19,17 @@
       <children>
           <Button layoutX="418.0" layoutY="204.0" onAction="#onHelloButtonClick" text="Replay" />
          <CheckBox fx:id="simpleGame" onAction="#SimpleGameChecked" layoutX="58.0" layoutY="6.0" mnemonicParsing="false" text="Simple Game" />
-         <CheckBox layoutX="14.0" layoutY="71.0" mnemonicParsing="false" text="Human" />
+         <CheckBox layoutX="14.0" fx:id="bluePlayerHuman" onAction= "#bHumanChecked" layoutY="71.0" mnemonicParsing="false" text="Human" />
          <CheckBox fx:id="bluePlayerS" onAction="#bSChecked" layoutX="37.0" layoutY="88.0" mnemonicParsing="false" text="S" />
          <CheckBox fx:id="bluePlayerO" onAction="#bOChecked" layoutX="36.0" layoutY="110.0" mnemonicParsing="false" text="O" />
-         <CheckBox layoutX="6.0" layoutY="135.0" mnemonicParsing="false" text="Computer" />
+         <CheckBox layoutX="6.0" fx:id="bluePlayerComputer" onAction= "#bComputerChecked" layoutY="135.0" mnemonicParsing="false" text="Computer" />
          <CheckBox fx:id="generalGame" onAction="#onGeneralGameChecked" layoutX="202.0" layoutY="6.0" mnemonicParsing="false" text="General Game" />
          <Label layoutX="15.0" layoutY="48.0" text="Blue Player" />
          <Label layoutX="209.0" layoutY="248.0" text="Current turn: " />
-         <CheckBox layoutX="414.0" layoutY="71.0" mnemonicParsing="false" text="Human" />
+         <CheckBox layoutX="414.0" fx:id="redPlayerHuman" onAction= "#rHumanChecked" layoutY="71.0" mnemonicParsing="false" text="Human" />
          <CheckBox fx:id="redPlayerS" onAction="#rSChecked" layoutX="441.0" layoutY="88.0" mnemonicParsing="false" text="S" />
          <CheckBox fx:id="redPlayerO" onAction="#rOChecked" layoutX="441.0" layoutY="110.0" mnemonicParsing="false" text="O" />
-         <CheckBox layoutX="405.0" layoutY="135.0" mnemonicParsing="false" text="Computer" />
+         <CheckBox layoutX="405.0" fx:id="redPlayerComputer" onAction= "#rComputerChecked" layoutY="135.0" mnemonicParsing="false" text="Computer" />
          <Label layoutX="416.0" layoutY="48.0" text="Red Player" />
          <Button layoutX="401.0" layoutY="235.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="86.0" text="New Game" />
          <Label layoutX="363.0" layoutY="6.0" text="Board Size:" />

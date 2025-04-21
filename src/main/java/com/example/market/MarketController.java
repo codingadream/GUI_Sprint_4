@@ -1,5 +1,7 @@
 package com.example.market;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -8,15 +10,14 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.awt.Point;
 
 
@@ -47,6 +48,11 @@ public class MarketController implements Initializable {
     public CheckBox bluePlayerO;
     public CheckBox redPlayerS;
     public CheckBox redPlayerO;
+
+    public CheckBox bluePlayerComputer;
+    public CheckBox redPlayerComputer;
+    public CheckBox bluePlayerHuman;
+    public CheckBox redPlayerHuman;
 
     @FXML
     private ChoiceBox<Integer> choiceBox;
@@ -94,6 +100,8 @@ public class MarketController implements Initializable {
         welcomeText.setText("THE GAME IS OVER!! PLAYER  " + winner + " HAS WON THIS GAME!!");
     }
 
+
+    //This is making the checkboxes dynamically checked one at a time
     @FXML
     protected void bSChecked() {
         if (bluePlayerS.isSelected()) {
@@ -143,6 +151,144 @@ public class MarketController implements Initializable {
         }
     }
 
+
+//This is making the checkboxes dynamically checked one at a time CONTINUED
+    @FXML
+    protected void rHumanChecked(){
+        if(redPlayerHuman.isSelected()){
+            redPlayerComputer.setSelected(false);
+        }
+    }
+
+    @FXML
+    protected void bHumanChecked(){
+        if(bluePlayerHuman.isSelected()){
+            bluePlayerComputer.setSelected(false);
+        }
+    }
+
+    @FXML
+    protected void rComputerChecked(){
+        redPlayerHuman.setSelected(false);
+
+        if(redPlayerComputer.isSelected() && bluePlayerComputer.isSelected()){
+            computerPlayComputer();
+
+        }
+
+    }
+
+    @FXML
+    protected void bComputerChecked(){
+        bluePlayerHuman.setSelected(false);
+
+
+        //check if the red player computer checkbox  is checked then have it play against itself
+        if (redPlayerComputer.isSelected() && bluePlayerComputer.isSelected()) {
+            computerPlayComputer();
+        }
+    }
+
+    @FXML
+    private Point computerChoice(){
+        int gridsize = choiceBox.getValue();
+
+        List<Point> emptyCells = new ArrayList<>();
+
+        for (int r = 0; r < gridsize; r++) {
+            for (int c = 0; c < gridsize; c++) {
+                if (!grid.containsKey(new Point(r, c))) {
+                    emptyCells.add(new Point(r, c));
+                }
+            }
+        }
+
+        if (emptyCells.isEmpty()) return null;
+
+        Random random = new Random();
+        return emptyCells.get(random.nextInt(emptyCells.size()));
+
+
+    }
+
+    //Rename this for human play computer 
+    @FXML
+    protected void computerPlayComputer() {
+        Timeline timeCycle = new Timeline();
+        timeCycle.setCycleCount(Timeline.INDEFINITE);
+
+        KeyFrame kf = new KeyFrame(Duration.seconds(0.5), event -> {
+            if (fullGrid()) {
+                timeCycle.stop();
+                if (generalGame.isSelected()) {
+                    onGeneralGameChecked();
+                }
+                return;
+            }
+            Character playerChar = null;
+
+            if (redTurn && redPlayerComputer.isSelected()) {
+                playerChar = redPlayerS.isSelected() ? 'S' : 'O';
+
+
+            }
+
+            else if (!redTurn && bluePlayerComputer.isSelected()) {
+                playerChar = bluePlayerS.isSelected() ? 'S' : 'O';
+            }
+
+            Point ComputerChoice = computerChoice();
+            if (ComputerChoice != null && playerChar != null) {
+                int r = ComputerChoice.x;
+                int c = ComputerChoice.y;
+
+                grid.put(new Point(r, c), playerChar);
+
+                for (Node n : gridPane.getChildren()) {
+                    if (GridPane.getRowIndex(n) == r && GridPane.getColumnIndex(n) == c && n instanceof StackPane cell) {
+                        Label label = new Label(playerChar.toString());
+                        int ggridSize = choiceBox.getValue();
+
+                        if (ggridSize == 2) {
+                            label.setStyle("-fx-font-size: 40px;");
+                        } else if (ggridSize == 3) {
+                            label.setStyle("-fx-font-size: 30px;");
+                        } else if (ggridSize == 4) {
+                            label.setStyle("-fx-font-size: 25px;");
+                        } else if (ggridSize == 5) {
+                            label.setStyle("-fx-font-size: 20px;");
+                        } else if (ggridSize == 6) {
+                            label.setStyle("-fx-font-size: 19px;");
+                        } else if (ggridSize == 7) {
+                            label.setStyle("-fx-font-size: 16px;");
+                        } else if (ggridSize == 8) {
+                            label.setStyle("-fx-font-size: 15px;");
+                        }
+
+                        cell.getChildren().add(label);
+
+                        if (isThereSOS(r, c)) {
+                            System.out.println("Player '" + playerChar + "' wins by forming SOS!");
+                            if (generalGame.isSelected()) {
+                                if (playerChar == 'S') sScore++;
+                                else if (playerChar == 'O') oScore++;
+                            }
+
+                            if (simpleGame.isSelected()) {
+                                timeCycle.stop();
+                                onSimpleGameChecked(playerChar);
+                                return;
+                            }
+                        }
+                        redTurn = !redTurn;
+                        break;
+                    }
+                }
+            }
+        });
+        timeCycle.getKeyFrames().add(kf);
+        timeCycle.play();
+    }
 
 
 
